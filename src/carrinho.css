@@ -1,0 +1,49 @@
+body{
+    background-color: #f0f8ff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    
+}
+
+
+.menu {
+    background-color: #4CAF50;
+    overflow: hidden;
+}
+
+.nav{
+    display: flex;
+    justify-content: space-around;
+    padding: 14px 16px;
+}
+
+.lista_menu{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+.itens_menu{
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+
+}
+
+
+
+.carrinho-container {
+  display: flex; /* coloca lado a lado */
+  gap: 20px; /* espaço entre as caixas */
+  padding: 20px;
+}
+
+.carrinho {
+  background-color: white; /* fundo branco */
+  color: black; /* texto preto */
+  padding: 20px;
+  border-radius: 10px; /* cantos arredondados */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* sombra suave */
+  flex: 1; /* as duas ocupam o mesmo tamanho */
+}
