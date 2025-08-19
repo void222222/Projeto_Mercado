@@ -37,7 +37,16 @@ body{
   display: flex; /* coloca lado a lado */
   gap: 20px; /* espaço entre as caixas */
   padding: 20px;
+  margin: 3em;
 }
+.carrinho:first-child {
+  flex: 2; /* ocupa mais espaço */
+}
+
+.carrinho:last-child {
+  flex: 1; /* ocupa menos espaço */
+}
+
 
 .carrinho {
   background-color: white; /* fundo branco */
