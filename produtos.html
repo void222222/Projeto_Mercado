@@ -3,111 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="src/carrinho.css"> <!-- aqui já pega o estilo do seu cabeçalho -->
-  <title>Contato</title>
+  <link rel="stylesheet" href="src/carrinho.css">
+  <title>Produtos</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f2f9ff;
-      margin: 0;
-      padding: 0;
+    /* --- ESTILOS DO CARROSSEL --- */
+    .carrossel-container {
+      position: relative;
+      max-width: 1000px;
+      margin: 40px auto;
+      overflow: hidden;
     }
 
-    .contato-wrapper {
+    .carrossel {
       display: flex;
-      justify-content: center;
-      margin-top: 40px; /* espaço abaixo do cabeçalho */
-      padding: 20px;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 10px;
     }
 
-    .contato-container {
-      width: 100%;
-      max-width: 500px;
+    .carrossel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .produto {
+      min-width: 220px;
       background: #fff;
-      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-    }
-
-    .contato-container h2 {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
       text-align: center;
-      margin-bottom: 25px;
-      color: #333;
+      padding: 15px;
+      transition: transform 0.3s;
     }
 
-    .contato-container label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: bold;
-      color: #333;
+    .produto:hover {
+      transform: scale(1.05);
     }
 
-    .contato-container input,
-    .contato-container textarea {
+    .produto img {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 18px;
-      border: 1px solid #ccc;
       border-radius: 8px;
-      font-size: 15px;
-      box-sizing: border-box;
     }
 
-    .contato-container textarea {
-      resize: vertical;
-      min-height: 120px;
-    }
-
-    .contato-container button {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 14px;
+    .produto h4 {
+      margin: 12px 0 5px;
       font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      transition: background 0.3s;
+      color: #333;
     }
 
-    .contato-container button:hover {
-      background: #45a049;
+    .produto p {
+      font-weight: bold;
+      color: #27ae60;
+      font-size: 18px;
+    }
+
+    .btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #fff;
+      border: none;
+      padding: 12px;
+      cursor: pointer;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      font-size: 18px;
+      z-index: 10;
+    }
+
+    .btn:hover {
+      background: #27ae60;
+      color: #fff;
+    }
+
+    .btn-prev {
+      left: 0;
+    }
+
+    .btn-next {
+      right: 0;
     }
   </style>
 </head>
 <body>
 
-  <!-- cabeçalho que você já fez -->
-  <header>
-     <div class="menu">
-<ul class="nav">
-    <li class="lista_menu"><a href="index.html" class="itens_menu">Página Inicial</a></li>
-    <li class="lista_menu"><a href="produtos.html" class="itens_menu">Produtos</a></li>
-    <li class="lista_menu"><a href="carrinho.html" class="itens_menu">Carrinho</a></li>
-    <li class="lista_menu"><a href="contato.html" class="itens_menu">Contato</a></li>
-</ul>
-    </div>
-
-  </header>
-
-  <!-- formulário -->
-  <div class="contato-wrapper">
-    <div class="contato-container">
-      <h2>Entre em Contato</h2>
-      <form action="#" method="post">
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
-
-        <label for="email">E-mail</label>
-        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-
-        <label for="mensagem">Mensagem</label>
-        <textarea id="mensagem" name="mensagem" placeholder="Digite sua mensagem" required></textarea>
-
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+  <!-- MENU -->
+  <div class="menu">
+    <ul class="nav">
+      <li class="lista_menu"><a href="pagina_inicial.html" class="itens_menu">Página Inicial</a></li>
+      <li class="lista_menu"><a href="produtos.html" class="itens_menu">Produtos</a></li>
+      <li class="lista_menu"><a href="carrinho.html" class="itens_menu">Carrinho</a></li>
+      <li class="lista_menu"><a href="contato.html" class="itens_menu">Contato</a></li>
+    </ul>
   </div>
+
+  <!-- CARROSSEL DE PRODUTOS -->
+  <div class="carrossel-container">
+    <button class="btn btn-prev" onclick="moverCarrossel(-1)">&#10094;</button>
+
+    <div class="carrossel" id="carrossel">
+      <div class="produto">
+        <img src="/img/707589---fralda-pampers-confort-sec--tamanho-xxg-60-unidades_0006_7500435153386_1.png" alt="Produto 1">
+        <h4>Fralda Pampers Confort Sec XXG 60 Unidades</h4>
+        <p>R$ 25,00</p>
+      </div>
+
+      <div class="produto">
+        <img src="/img/738913---Fralda-Descartavel-Turma-da-Monica-Baby-XXG-36-Unidades_0006_0.png.png" alt="Produto 2">
+        <h4>Fralda Turma da Mônica Baby XXG 36 Unidades</h4>
+        <p>R$ 8,00</p>
+      </div>
+
+      <div class="produto">
+        <img src="/img/Alcatra.jpg" alt="Produto 3">
+        <h4>Alcatra Bovina 500g</h4>
+        <p>R$ 5,50</p>
+      </div>
+
+      <div class="produto">
+        <img src="/img/Amaciante-Concentrado-Original-Comfort-500-Ml.webp" alt="Produto 4">
+        <h4>Amaciante Comfort Concentrado Original 500ml</h4>
+        <p>R$ 7,00</p>
+      </div>
+
+      <div class="produto">
+        <img src="/img/amaciante-tradicional-comfort-explosão-azul.jpg" alt="Produto 5">
+        <h4>Amaciante Comfort Explosão Azul Tradicional</h4>
+        <p>R$ 22,00</p>
+      </div>
+    </div>
+
+    <button class="btn btn-next" onclick="moverCarrossel(1)">&#10095;</button>
+  </div>
+
+  <script>
+    function moverCarrossel(direcao) {
+      const carrossel = document.getElementById("carrossel");
+      const scrollAmount = 250; // tamanho do pulo
+      carrossel.scrollBy({ left: direcao * scrollAmount, behavior: "smooth" });
+    }
+  </script>
 
 </body>
 </html>
