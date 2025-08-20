@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="src/carrinho.css">
+  <title>Contato</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f9ff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #4CAF50; /* verde padrão */
+      color: white;
+      padding: 15px 30px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .contato-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 40px; /* espaço abaixo do cabeçalho */
+      padding: 20px;
+    }
+
+    .contato-container {
+      width: 100%;
+      max-width: 500px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    }
+
+    .contato-container h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #333;
+    }
+
+    .contato-container label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .contato-container input,
+    .contato-container textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 18px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+
+    .contato-container textarea {
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .contato-container button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s;
+    }
+
+    .contato-container button:hover {
+      background: #45a049;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Meu Mercado - Contato
+  </header>
+
+  <div class="contato-wrapper">
+    <div class="contato-container">
+      <h2>Entre em Contato</h2>
+      <form action="#" method="post">
+        <label for="nome">Nome</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+
+        <label for="mensagem">Mensagem</label>
+        <textarea id="mensagem" name="mensagem" placeholder="Digite sua mensagem" required></textarea>
+
+        <button type="submit">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
