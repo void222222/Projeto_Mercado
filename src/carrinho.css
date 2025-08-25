@@ -1,5 +1,5 @@
 body{
-    background-color: #f0f8ff;
+    background-color: var(--cor-secundaria);
     font-family: Arial, sans-serif;
     margin: 0;
     
@@ -7,7 +7,7 @@ body{
 
 
 .menu {
-    background-color: #4CAF50;
+    background-color: var(--cor-primaria);
     overflow: hidden;
 }
 
@@ -23,7 +23,7 @@ body{
     padding: 0;
 }
 .itens_menu{
-    color: white;
+    color: var(--cor-secundaria);
     text-align: center;
     padding: 14px 16px;
     text-decoration: none;
@@ -50,7 +50,7 @@ body{
 
 .carrinho {
   background-color: white; /* fundo branco */
-  color: black; /* texto preto */
+  color: var(--cor-texto); /* texto preto */
   padding: 20px;
   border-radius: 10px; /* cantos arredondados */
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* sombra suave */
