@@ -6,7 +6,81 @@
     <link rel="stylesheet" href="src/pagina_inicial.css">
     <link rel="stylesheet" href="src/cor.css">
     <title>Mercado</title>
-
+    <style>
+        /* Estilos para o carrossel na página inicial */
+        .carrossel-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 20px auto;
+            overflow: hidden;
+        }
+        
+        .carrossel {
+            display: flex;
+            transition: transform 0.5s ease;
+            padding: 10px 0;
+        }
+        
+        .produto {
+            min-width: 220px;
+            margin: 0 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .produto img {
+            max-width: 100%;
+            height: 150px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .btn-prev, .btn-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        
+        .btn-prev {
+            left: 10px;
+        }
+        
+        .btn-next {
+            right: 10px;
+        }
+        
+        /* Mensagem quando não há produtos */
+        .no-products {
+            text-align: center;
+            padding: 40px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            max-width: 800px;
+        }
+        
+        .no-products h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        
+        .no-products p {
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
 
@@ -23,5 +97,85 @@
         <h1 class="barraa">promoção de hoje</h1>
     </div>
 
+    <!-- CARROSSEL DA PÁGINA INICIAL -->
+    <div class="carrossel-container" data-category="homepage">
+        <button class="btn-prev" onclick="moverCarrossel(-1, 'homepage')">&#10094;</button>
+        
+        <div class="carrossel" id="carrossel-homepage">
+            <!-- As imagens do carrossel serão carregadas aqui via JavaScript -->
+        </div>
+        
+        <button class="btn-next" onclick="moverCarrossel(1, 'homepage')">&#10095;</button>
+    </div>
+
+    <script>
+        // Carregar imagens do carrossel do localStorage por categoria
+        document.addEventListener('DOMContentLoaded', function() {
+            const category = 'homepage'; // Categoria específica para a página inicial
+            const carouselItems = JSON.parse(localStorage.getItem('carouselItems')) || [];
+            const carouselElement = document.getElementById('carrossel-' + category);
+            
+            // Limpar carrossel existente
+            carouselElement.innerHTML = '';
+            
+            // Filtrar itens por categoria e status
+            const categoryItems = carouselItems.filter(item => 
+                item.category === category && item.status === 'active'
+            );
+            
+            if (categoryItems.length > 0) {
+                categoryItems.forEach(item => {
+                    const productDiv = document.createElement('div');
+                    productDiv.className = 'produto';
+                    
+                    productDiv.innerHTML = `
+                        <img src="${item.image}" alt="${item.title || 'Produto'}">
+                        ${item.title ? `<h4>${item.title}</h4>` : ''}
+                        ${item.description ? `<p>${item.description}</p>` : ''}
+                    `;
+                    
+                    // Se tiver link, tornar clicável
+                    if (item.link) {
+                        productDiv.addEventListener('click', function() {
+                            window.location.href = item.link;
+                        });
+                        productDiv.style.cursor = 'pointer';
+                    }
+                    
+                    carouselElement.appendChild(productDiv);
+                });
+            } else {
+                // Mensagem se não houver itens para esta categoria
+                carouselElement.innerHTML = `
+                    <div class="no-products">
+                        <h2>Nenhuma promoção disponível</h2>
+                        <p>Não há promoções cadastradas para hoje. Utilize o Painel Administrativo para adicionar promoções.</p>
+                    </div>
+                `;
+            }
+            
+            // Inicializar a posição do carrossel para esta categoria
+            if (!window.carouselPositions) window.carouselPositions = {};
+            window.carouselPositions[category] = 0;
+        });
+
+        // Função para mover o carrossel - específica por categoria
+        function moverCarrossel(direction, category) {
+            const carousel = document.getElementById('carrossel-' + category);
+            const productWidth = document.querySelector('.produto').offsetWidth + 30; // 30px de margem
+            const visibleProducts = Math.floor(carousel.offsetWidth / productWidth);
+            const totalProducts = document.querySelectorAll('.produto').length;
+            
+            // Calcular a nova posição
+            window.carouselPositions[category] += direction * visibleProducts * productWidth;
+            
+            // Limitar a posição para não ultrapassar os limites
+            const maxScroll = (totalProducts - visibleProducts) * productWidth;
+            window.carouselPositions[category] = Math.max(0, Math.min(window.carouselPositions[category], maxScroll));
+            
+            // Aplicar a transformação
+            carousel.style.transform = `translateX(-${window.carouselPositions[category]}px)`;
+        }
+    </script>
 </body>
 </html>

@@ -3,30 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="src/carrinho.css">
-    <link rel="stylesheet" href="src/cor.css">
-    <title>Carrinho</title>
 </head>
 <body>
-    
+    <!-- Menu de navegação -->
     <div class="menu">
-<ul class="nav">
-    <li class="lista_menu"><a href="pagina_inicial.html" class="itens_menu">Página Inicial</a></li>
-    <li class="lista_menu"><a href="produtos.html" class="itens_menu">Produtos</a></li>
-    <li class="lista_menu"><a href="carrinho.html" class="itens_menu">Carrinho</a></li>
-    <li class="lista_menu"><a href="contato.html" class="itens_menu">Contato</a></li>
-</ul>
+        <div class="container">
+            <ul class="nav">
+                <li class="lista_menu"><a href="pagina_inicial.html" class="itens_menu">Página Inicial</a></li>
+                <li class="lista_menu"><a href="produtos.html" class="itens_menu">Produtos</a></li>
+                <li class="lista_menu cart-link">
+                    <a href="#" class="itens_menu active">
+                        <i class="fas fa-shopping-cart"></i> Carrinho
+                        <span class="cart-counter" id="cartCounter">0</span>
+                    </a>
+                </li>
+                <li class="lista_menu"><a href="contato.html" class="itens_menu">Contato</a></li>
+            </ul>
+        </div>
     </div>
 
-<section class="carrinho-container">
-    <div class="carrinho">
-        <h1>Carinho</h1>
-
+    <!-- Conteúdo principal -->
+    <div class="container">
+        <div class="carrinho-container">
+            <div class="carrinho carrinho-produtos">
+                <h1>Seu Carrinho</h1>
+                <div id="carrinho-itens">
+                    <!-- Itens do carrinho serão carregados aqui -->
+                </div>
+            </div>
+            
+            <div class="carrinho carrinho-resumo">
+                <h1>Resumo do Pedido</h1>
+                <div class="resumo-item">
+                    <span>Subtotal:</span>
+                    <span id="resumo-subtotal">R$ 0,00</span>
+                </div>
+                <div class="resumo-item">
+                    <span>Frete:</span>
+                    <span id="resumo-frete">R$ 0,00</span>
+                </div>
+                <div class="resumo-item resumo-total">
+                    <span>Total:</span>
+                    <span id="resumo-total">R$ 0,00</span>
+                </div>
+                <button class="btn-finalizar" id="btn-finalizar">Finalizar Compra</button>
+            </div>
+        </div>
     </div>
-     <div class="carrinho">
-        <h1>Resumo Carrinho</h1>
-    </div>
-</section>
 
+    <script src="js/carrinho.js"></script>
 </body>
 </html>
