@@ -3,48 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Administrativo - Loja Online</title>
+    <title>Painel Administrativo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="src/adm.css">
+     
 </head>
 <body>
-    <!-- Tela de Login -->
-    <div id="loginPage" class="login-container">
+    <!-- Página de Login -->
+    <div id="loginPage">
         <div class="login-box">
-            <div class="login-header">
-                <h2><i class="fas fa-store"></i> Painel Administrativo</h2>
-                <p>Faça login para acessar o sistema</p>
-            </div>
+            <h2><i class="fas fa-lock"></i> Área Administrativa</h2>
             <form id="loginForm">
                 <div class="form-group">
                     <label for="username">Usuário</label>
-                    <input type="text" id="username" class="form-control" placeholder="Digite seu usuário" required>
+                    <input type="text" id="username" class="form-control" placeholder="Digite seu usuário" value="admin">
                 </div>
                 <div class="form-group">
                     <label for="password">Senha</label>
-                    <input type="password" id="password" class="form-control" placeholder="Digite sua senha" required>
+                    <input type="password" id="password" class="form-control" placeholder="Digite sua senha" value="admin123">
                 </div>
-                <button type="submit" class="btn" style="width: 100%;">
-                    <i class="fas fa-sign-in-alt"></i> Entrar
-                </button>
-                <div style="margin-top: 15px; text-align: center; font-size: 13px; color: #666;">
-                    <p>Use: <strong>admin</strong> / <strong>admin123</strong></p>
-                </div>
+                <button type="submit" class="btn">Entrar</button>
             </form>
+            <div id="loginAlert" style="display: none; margin-top: 20px; padding: 10px; border-radius: 5px; text-align: center;"></div>
         </div>
     </div>
 
     <!-- Painel Administrativo -->
-    <div id="adminPanel" class="admin-container" style="display: none;">
+    <div id="adminPanel" class="container">
         <!-- Sidebar -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Loja Online</h2>
+                <h3><i class="fas fa-store"></i> Mercado Admin</h3>
+                <p id="currentDate" style="color: #aaa; font-size: 14px;"></p>
             </div>
             <ul class="sidebar-menu">
-                <li><a href="#" class="active" data-tab="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="#" data-tab="carousel"><i class="fas fa-images"></i> Carrossel</a></li>
-                <li><a href="#" data-tab="products"><i class="fas fa-shopping-bag"></i> Produtos</a></li>
+                <li><a href="#" data-tab="carousel" class="active"><i class="fas fa-images"></i> Carrossel</a></li>
+                <li><a href="#" data-tab="products"><i class="fas fa-box"></i> Produtos</a></li>
+                <li><a href="#" data-tab="orders"><i class="fas fa-shopping-cart"></i> Pedidos</a></li>
+                <li><a href="#" data-tab="stats"><i class="fas fa-chart-bar"></i> Estatísticas</a></li>
                 <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
             </ul>
         </div>
@@ -52,189 +48,157 @@
         <!-- Conteúdo Principal -->
         <div class="main-content">
             <div class="header">
-                <h2>Dashboard</h2>
-                <div>
-                    <span><i class="fas fa-user"></i> Bem-vindo, Admin</span>
-                </div>
-            </div>
-
-            <!-- Dashboard -->
-            <div id="dashboardTab" class="tab-content">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Visão Geral</h3>
-                        <span>Hoje: <span id="currentDate"></span></span>
+                <h1>Painel de Controle</h1>
+                <div class="header-info">
+                    <div class="info-card">
+                        <h3>Itens no Carrossel</h3>
+                        <p id="carouselCount">0</p>
                     </div>
-                    <div class="stats-container">
-                        <div class="stat-box">
-                            <h4><i class="fas fa-images"></i> Imagens no Carrossel</h4>
-                            <p style="font-size: 2rem; margin: 10px 0;" id="carouselCount">0</p>
-                            <p>Total de imagens ativas</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4><i class="fas fa-shopping-bag"></i> Total de Produtos</h4>
-                            <p style="font-size: 2rem; margin: 10px 0;" id="productsCount">0</p>
-                            <p>Produtos cadastrados</p>
-                        </div>
-                        <div class="stat-box">
-                            <h4><i class="fas fa-shopping-cart"></i> Vendas</h4>
-                            <p style="font-size: 2rem; margin: 10px 0;">12</p>
-                            <p>Pedidos este mês</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Atividade Recente</h3>
-                    </div>
-                    <div>
-                        <div style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                            <div style="background-color: #e3f2fd; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                <i class="fas fa-plus" style="color: #2196f3;"></i>
-                            </div>
-                            <div>
-                                <p style="font-weight: 500;">Novo produto adicionado: "Fralda Pampers"</p>
-                                <p style="color: #777; font-size: 0.9rem;">Há 2 minutos</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; padding: 10px; border-bottom: 1px solid #eee;">
-                            <div style="background-color: #e8f5e9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                <i class="fas fa-edit" style="color: #4caf50;"></i>
-                            </div>
-                            <div>
-                                <p style="font-weight: 500;">Produto "Amaciante Comfort" atualizado</p>
-                                <p style="color: #777; font-size: 0.9rem;">Há 15 minutos</p>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; padding: 10px;">
-                            <div style="background-color: #ffebee; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
-                                <i class="fas fa-trash-alt" style="color: #f44336;"></i>
-                            </div>
-                            <div>
-                                <p style="font-weight: 500;">Imagem removida do carrossel</p>
-                                <p style="color: #777; font-size: 0.9rem;">Há 1 hora</p>
-                            </div>
-                        </div>
+                    <div class="info-card">
+                        <h3>Produtos</h3>
+                        <p id="productsCount">0</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Gerenciamento do Carrossel -->
-            <div id="carouselTab" class="tab-content" style="display: none;">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Adicionar Nova Imagem ao Carrossel</h3>
-                    </div>
-                    <form id="addCarouselForm">
-                        <div class="form-group">
-                            <label for="carouselImage">Imagem</label>
-                            <input type="file" id="carouselImage" class="form-control" accept="image/*">
-                            <img id="carouselPreview" class="image-preview" src="" alt="Preview">
-                        </div>
-                        <div class="form-group">
-                            <label for="carouselTitle">Título (opcional)</label>
-                            <input type="text" id="carouselTitle" class="form-control" placeholder="Título da imagem">
-                        </div>
-                        <div class="form-group">
-                            <label for="carouselDescription">Descrição (opcional)</label>
-                            <textarea id="carouselDescription" class="form-control" placeholder="Descrição da imagem"></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="carouselLink">Link (opcional)</label>
-                            <input type="text" id="carouselLink" class="form-control" placeholder="https://...">
-                        </div>
-                        <div class="form-group">
-                            <label for="carouselCategory">Categoria</label>
-                            <select id="carouselCategory" class="form-control" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="homepage">Página Inicial</option>
-                                <option value="produtos">Página de Produtos</option>
-                                <option value="promocoes">Página de Promoções</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="carouselStatus">Status</label>
-                            <select id="carouselStatus" class="form-control">
-                                <option value="active">Ativo</option>
-                                <option value="inactive">Inativo</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn">
-                            <i class="fas fa-plus"></i> Adicionar ao Carrossel
-                        </button>
-                    </form>
-                </div>
+            <!-- Alertas -->
+            <div id="alertContainer"></div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Imagens do Carrossel</h3>
+            <!-- Aba do Carrossel -->
+            <div id="carouselTab" class="tab-content">
+                <h2><i class="fas fa-images"></i> Gerenciar Carrossel</h2>
+                
+                <form id="addCarouselForm">
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="carouselTitle">Título</label>
+                                <input type="text" id="carouselTitle" class="form-control" placeholder="Título do item">
+                            </div>
+                            <div class="form-group">
+                                <label for="carouselDescription">Descrição</label>
+                                <textarea id="carouselDescription" class="form-control" placeholder="Descrição do item" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="carouselLink">Link (opcional)</label>
+                                <input type="text" id="carouselLink" class="form-control" placeholder="https://...">
+                            </div>
+                        </div>
+                        
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="carouselCategory">Categoria</label>
+                                <select id="carouselCategory" class="form-control">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="homepage">Página Inicial</option>
+                                    <option value="produtos">Página de Produtos</option>
+                                    <option value="promocoes">Página de Promoções</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="carouselStatus">Status</label>
+                                <select id="carouselStatus" class="form-control">
+                                    <option value="active">Ativo</option>
+                                    <option value="inactive">Inativo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="carouselImage">Imagem</label>
+                                <input type="file" id="carouselImage" class="form-control" accept="image/*">
+                                <div class="image-preview">
+                                    <img id="carouselPreview" src="" alt="Preview" style="display: none;">
+                                    <span id="carouselPreviewText" style="color: #999;">Preview da imagem</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div id="carouselItems" class="item-list">
-                        <p>Nenhuma imagem adicionada ao carrossel.</p>
+                    
+                    <button type="submit" class="btn">Adicionar ao Carrossel</button>
+                </form>
+                
+                <div class="list-container">
+                    <h3>Itens do Carrossel</h3>
+                    <div id="carouselItems">
+                        <p>Carregando itens do carrossel...</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Gerenciamento de Produtos -->
-            <div id="productsTab" class="tab-content" style="display: none;">
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Adicionar Novo Produto</h3>
+            <!-- Aba de Produtos -->
+            <div id="productsTab" class="tab-content">
+                <h2><i class="fas fa-box"></i> Gerenciar Produtos</h2>
+                
+                <form id="addProductForm">
+                    <div class="form-row">
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="productTitle">Nome do Produto</label>
+                                <input type="text" id="productTitle" class="form-control" placeholder="Nome do produto">
+                            </div>
+                            <div class="form-group">
+                                <label for="productDescription">Descrição</label>
+                                <textarea id="productDescription" class="form-control" placeholder="Descrição do produto" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="productPrice">Preço (R$)</label>
+                                <input type="number" id="productPrice" class="form-control" placeholder="0.00" step="0.01" min="0">
+                            </div>
+                        </div>
+                        
+                        <div class="form-column">
+                            <div class="form-group">
+                                <label for="productCategory">Categoria</label>
+                                <select id="productCategory" class="form-control">
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="fraldas">Fraldas</option>
+                                    <option value="higiene">Higiene</option>
+                                    <option value="alimentos">Alimentos</option>
+                                    <option value="limpeza">Limpeza</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="productStatus">Status</label>
+                                <select id="productStatus" class="form-control">
+                                    <option value="active">Ativo</option>
+                                    <option value="inactive">Inativo</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="productImage">Imagem do Produto</label>
+                                <input type="file" id="productImage" class="form-control" accept="image/*">
+                                <div class="image-preview">
+                                    <img id="productPreview" src="" alt="Preview" style="display: none;">
+                                    <span id="productPreviewText" style="color: #999;">Preview da imagem</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <form id="addProductForm">
-                        <div class="form-group">
-                            <label for="productImage">Imagem do Produto</label>
-                            <input type="file" id="productImage" class="form-control" accept="image/*">
-                            <img id="productPreview" class="image-preview" src="" alt="Preview">
-                        </div>
-                        <div class="form-group">
-                            <label for="productTitle">Nome do Produto</label>
-                            <input type="text" id="productTitle" class="form-control" placeholder="Nome do produto" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="productDescription">Descrição</label>
-                            <textarea id="productDescription" class="form-control" placeholder="Descrição do produto" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="productPrice">Preço (R$)</label>
-                            <input type="number" id="productPrice" class="form-control" placeholder="0.00" step="0.01" min="0" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="productCategory">Categoria</label>
-                            <select id="productCategory" class="form-control" required>
-                                <option value="">Selecione uma categoria</option>
-                                <option value="fraldas">Fraldas</option>
-                                <option value="higiene">Higiene</option>
-                                <option value="alimentos">Alimentos</option>
-                                <option value="limpeza">Limpeza</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="productStatus">Status</label>
-                            <select id="productStatus" class="form-control">
-                                <option value="active">Ativo</option>
-                                <option value="inactive">Inativo</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn">
-                            <i class="fas fa-plus"></i> Adicionar Produto
-                        </button>
-                    </form>
+                    
+                    <button type="submit" class="btn">Adicionar Produto</button>
+                </form>
+                
+                <div class="list-container">
+                    <h3>Produtos Cadastrados</h3>
+                    <div id="productsList">
+                        <p>Carregando produtos...</p>
+                    </div>
                 </div>
+            </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Produtos Cadastrados</h3>
-                    </div>
-                    <div id="productsList" class="item-list">
-                        <p>Nenhum produto cadastrado.</p>
-                    </div>
-                </div>
+            <!-- Outras abas (simuladas) -->
+            <div id="ordersTab" class="tab-content">
+                <h2><i class="fas fa-shopping-cart"></i> Gerenciar Pedidos</h2>
+                <p>Funcionalidade em desenvolvimento.</p>
+            </div>
+
+            <div id="statsTab" class="tab-content">
+                <h2><i class="fas fa-chart-bar"></i> Estatísticas</h2>
+                <p>Funcionalidade em desenvolvimento.</p>
             </div>
         </div>
     </div>
 
-    <script src="js/admin.js"></script>
+   <script src="js/admin.js"></script>
+       
 </body>
 </html>

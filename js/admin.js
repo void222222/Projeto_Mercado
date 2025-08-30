@@ -1,12 +1,8 @@
- // Dados de exemplo
+  // Dados de exemplo
         const adminUser = {
             username: "admin",
             password: "admin123"
         };
-
-        // Simulação de banco de dados
-        let carouselItems = JSON.parse(localStorage.getItem('carouselItems')) || [];
-        let products = JSON.parse(localStorage.getItem('products')) || [];
 
         // Elementos DOM
         const loginPage = document.getElementById('loginPage');
@@ -16,16 +12,19 @@
         const addCarouselForm = document.getElementById('addCarouselForm');
         const carouselImage = document.getElementById('carouselImage');
         const carouselPreview = document.getElementById('carouselPreview');
+        const carouselPreviewText = document.getElementById('carouselPreviewText');
         const carouselItemsContainer = document.getElementById('carouselItems');
         const addProductForm = document.getElementById('addProductForm');
         const productImage = document.getElementById('productImage');
         const productPreview = document.getElementById('productPreview');
+        const productPreviewText = document.getElementById('productPreviewText');
         const productsList = document.getElementById('productsList');
         const tabLinks = document.querySelectorAll('.sidebar-menu a');
         const tabContents = document.querySelectorAll('.tab-content');
         const carouselCount = document.getElementById('carouselCount');
         const productsCount = document.getElementById('productsCount');
         const currentDateEl = document.getElementById('currentDate');
+        const alertContainer = document.getElementById('alertContainer');
 
         // Data atual
         function updateCurrentDate() {
@@ -41,6 +40,7 @@
                 reader.onload = function(event) {
                     carouselPreview.src = event.target.result;
                     carouselPreview.style.display = 'block';
+                    carouselPreviewText.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             }
@@ -54,6 +54,7 @@
                 reader.onload = function(event) {
                     productPreview.src = event.target.result;
                     productPreview.style.display = 'block';
+                    productPreviewText.style.display = 'none';
                 };
                 reader.readAsDataURL(file);
             }
@@ -68,8 +69,8 @@
             if (username === adminUser.username && password === adminUser.password) {
                 loginPage.style.display = 'none';
                 adminPanel.style.display = 'flex';
-                renderCarouselItems();
-                renderProducts();
+                loadCarouselItems();
+                loadProducts();
                 updateCurrentDate();
                 showAlert('Login realizado com sucesso!', 'success');
             } else {
@@ -91,23 +92,85 @@
                 e.preventDefault();
                 
                 if (this.id !== 'logoutBtn') {
-                    // Remover classe active de todos os links
                     tabLinks.forEach(l => l.classList.remove('active'));
-                    // Adicionar classe active ao link clicado
                     this.classList.add('active');
                     
-                    // Esconder todos os conteúdos de abas
                     tabContents.forEach(content => content.style.display = 'none');
                     
-                    // Mostrar o conteúdo da aba correspondente
                     const tabId = this.getAttribute('data-tab') + 'Tab';
                     document.getElementById(tabId).style.display = 'block';
                 }
             });
         });
 
+        // Função para fazer requisições com tratamento de erro
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                
+                // Verificar se a resposta é JSON
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    const text = await response.text();
+                    throw new Error(`Resposta não é JSON: ${text.substring(0, 100)}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                throw error;
+            }
+        }
+
+        // Carregar itens do carrossel do servidor
+        async function loadCarouselItems() {
+            try {
+                const carouselItems = await makeRequest('http://localhost:3000/api/carousel');
+                renderCarouselItems(carouselItems);
+            } catch (error) {
+                console.error('Erro ao carregar carrossel:', error);
+                showAlert('Erro ao carregar itens do carrossel. Verifique se o servidor está rodando.', 'error');
+                // Dados de exemplo para demonstração
+                renderCarouselItems([
+                    {
+                        id: 1,
+                        title: "Oferta Especial",
+                        description: "Promoção de verão com descontos incríveis",
+                        image: "https://via.placeholder.com/300x200?text=Imagem+Carrossel",
+                        category: "homepage",
+                        status: "active",
+                        date: new Date().toISOString()
+                    }
+                ]);
+            }
+        }
+
+        // Carregar produtos do servidor
+        async function loadProducts() {
+            try {
+                const products = await makeRequest('http://localhost:3000/api/products');
+                renderProducts(products);
+            } catch (error) {
+                console.error('Erro ao carregar produtos:', error);
+                showAlert('Erro ao carregar produtos. Verifique se o servidor está rodando.', 'error');
+                // Dados de exemplo para demonstração
+                renderProducts([
+                    {
+                        id: 1,
+                        title: "Produto Exemplo",
+                        description: "Descrição do produto exemplo",
+                        price: 29.99,
+                        image: "https://via.placeholder.com/200x150?text=Produto",
+                        category: "alimentos",
+                        status: "active",
+                        date: new Date().toISOString()
+                    }
+                ]);
+            }
+        }
+
         // Adicionar item ao carrossel
-        addCarouselForm.addEventListener('submit', function(e) {
+        addCarouselForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('carouselTitle').value;
@@ -117,27 +180,45 @@
             const status = document.getElementById('carouselStatus').value;
             
             if (category) {
-                const newItem = {
-                    id: Date.now(),
-                    title: title,
-                    description: description,
-                    link: link,
-                    category: category,
-                    status: status,
-                    date: new Date().toISOString()
-                };
-                
-                carouselItems.push(newItem);
-                
                 try {
-                    localStorage.setItem('carouselItems', JSON.stringify(carouselItems));
-                    renderCarouselItems();
-                    addCarouselForm.reset();
-                    carouselPreview.style.display = 'none';
-                    showAlert('Item adicionado ao carrossel com sucesso!', 'success');
-                } catch (e) {
-                    showAlert('Erro ao salvar: espaço de armazenamento insuficiente.', 'error');
-                    carouselItems.pop();
+                    const response = await fetch('http://localhost:3000/api/carousel', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            title,
+                            description,
+                            link,
+                            category,
+                            status,
+                            image: carouselPreview.src || 'https://via.placeholder.com/300x200?text=Imagem'
+                        })
+                    });
+                    
+                    // Verificar se a resposta é JSON
+                    const contentType = response.headers.get('content-type');
+                    let result;
+                    
+                    if (contentType && contentType.includes('application/json')) {
+                        result = await response.json();
+                    } else {
+                        const text = await response.text();
+                        throw new Error(`Resposta não é JSON: ${text.substring(0, 100)}`);
+                    }
+                    
+                    if (result.success) {
+                        showAlert('Item adicionado ao carrossel com sucesso!', 'success');
+                        addCarouselForm.reset();
+                        carouselPreview.style.display = 'none';
+                        carouselPreviewText.style.display = 'block';
+                        loadCarouselItems();
+                    } else {
+                        showAlert('Erro ao adicionar item: ' + result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showAlert('Erro de conexão. Verifique se o servidor está rodando na porta 3000.', 'error');
                 }
             } else {
                 showAlert('Por favor, selecione uma categoria para o item.', 'error');
@@ -145,7 +226,7 @@
         });
 
         // Adicionar produto
-        addProductForm.addEventListener('submit', function(e) {
+        addProductForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('productTitle').value;
@@ -154,46 +235,46 @@
             const category = document.getElementById('productCategory').value;
             const status = document.getElementById('productStatus').value;
             
-            // Verificar se estamos editando
-            const isEditing = addProductForm.getAttribute('data-editing');
-            
             if (title && description && price && category) {
-                const productData = {
-                    id: isEditing ? parseInt(isEditing) : Date.now(),
-                    title: title,
-                    description: description,
-                    price: price,
-                    category: category,
-                    status: status,
-                    date: isEditing ? products.find(p => p.id === parseInt(isEditing)).date : new Date().toISOString()
-                };
-                
-                if (isEditing) {
-                    // Atualizar produto existente
-                    const index = products.findIndex(p => p.id === parseInt(isEditing));
-                    if (index !== -1) {
-                        products[index] = productData;
-                    }
-                } else {
-                    // Adicionar novo produto
-                    products.push(productData);
-                }
-                
                 try {
-                    localStorage.setItem('products', JSON.stringify(products));
-                    renderProducts();
-                    addProductForm.reset();
-                    addProductForm.removeAttribute('data-editing');
-                    productPreview.style.display = 'none';
+                    const response = await fetch('http://localhost:3000/api/products', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            title,
+                            description,
+                            price,
+                            category,
+                            status,
+                            image: productPreview.src || 'https://via.placeholder.com/200x150?text=Produto'
+                        })
+                    });
                     
-                    // Restaurar texto do botão
-                    const submitButton = addProductForm.querySelector('button[type="submit"]');
-                    submitButton.innerHTML = '<i class="fas fa-plus"></i> Adicionar Produto';
+                    // Verificar se a resposta é JSON
+                    const contentType = response.headers.get('content-type');
+                    let result;
                     
-                    showAlert(isEditing ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!', 'success');
-                } catch (e) {
-                    showAlert('Erro ao salvar: espaço de armazenamento insuficiente.', 'error');
-                    if (!isEditing) products.pop();
+                    if (contentType && contentType.includes('application/json')) {
+                        result = await response.json();
+                    } else {
+                        const text = await response.text();
+                        throw new Error(`Resposta não é JSON: ${text.substring(0, 100)}`);
+                    }
+                    
+                    if (result.success) {
+                        showAlert('Produto adicionado com sucesso!', 'success');
+                        addProductForm.reset();
+                        productPreview.style.display = 'none';
+                        productPreviewText.style.display = 'block';
+                        loadProducts();
+                    } else {
+                        showAlert('Erro ao adicionar produto: ' + result.error, 'error');
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    showAlert('Erro de conexão. Verifique se o servidor está rodando na porta 3000.', 'error');
                 }
             } else {
                 showAlert('Por favor, preencha todos os campos obrigatórios.', 'error');
@@ -201,7 +282,7 @@
         });
 
         // Renderizar itens do carrossel
-        function renderCarouselItems() {
+        function renderCarouselItems(carouselItems) {
             if (carouselItems.length === 0) {
                 carouselItemsContainer.innerHTML = '<p>Nenhuma imagem adicionada ao carrossel.</p>';
                 carouselCount.textContent = '0';
@@ -214,7 +295,8 @@
                 const itemElement = document.createElement('div');
                 itemElement.className = 'list-item';
                 itemElement.innerHTML = `
-                    <img src="https://via.placeholder.com/100x80?text=Carrossel" alt="${item.title || 'Imagem do carrossel'}">
+                    <img src="${item.image}" alt="${item.title || 'Imagem do carrossel'}" 
+                         onerror="this.src='https://via.placeholder.com/100x80?text=Erro+Imagem'">
                     <div class="list-item-details">
                         <h4>${item.title || 'Sem título'}</h4>
                         ${item.description ? `<p>${item.description}</p>` : ''}
@@ -224,7 +306,7 @@
                         <p><span class="status-indicator status-${item.status}"></span> ${item.status === 'active' ? 'Ativo' : 'Inativo'}</p>
                     </div>
                     <div class="list-item-actions">
-                        <button class="btn btn-danger" onclick="deleteCarouselItem(${item.id})">
+                        <button class="btn btn-danger btn-sm" onclick="deleteCarouselItem(${item.id})">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </button>
                     </div>
@@ -237,7 +319,7 @@
         }
 
         // Renderizar produtos
-        function renderProducts() {
+        function renderProducts(products) {
             if (products.length === 0) {
                 productsList.innerHTML = '<p>Nenhum produto cadastrado.</p>';
                 productsCount.textContent = '0';
@@ -250,7 +332,8 @@
                 const productElement = document.createElement('div');
                 productElement.className = 'list-item';
                 productElement.innerHTML = `
-                    <img src="https://via.placeholder.com/100x80?text=Produto" alt="${product.title}">
+                    <img src="${product.image}" alt="${product.title}" 
+                         onerror="this.src='https://via.placeholder.com/100x80?text=Erro+Imagem'">
                     <div class="list-item-details">
                         <h4>${product.title}</h4>
                         <p>${product.description}</p>
@@ -260,10 +343,10 @@
                         <p><span class="status-indicator status-${product.status}"></span> ${product.status === 'active' ? 'Ativo' : 'Inativo'}</p>
                     </div>
                     <div class="list-item-actions">
-                        <button class="btn" onclick="editProduct(${product.id})">
+                        <button class="btn btn-sm" onclick="editProduct(${product.id})">
                             <i class="fas fa-edit"></i> Editar
                         </button>
-                        <button class="btn btn-danger" onclick="deleteProduct(${product.id})">
+                        <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id})">
                             <i class="fas fa-trash-alt"></i> Excluir
                         </button>
                     </div>
@@ -274,7 +357,7 @@
             productsCount.textContent = products.length;
         }
 
-        // Obter nome amigável para exibição da categoria
+        // Funções auxiliares
         function getCategoryDisplayName(category) {
             const categoryNames = {
                 'homepage': 'Página Inicial',
@@ -288,70 +371,23 @@
             return categoryNames[category] || category;
         }
 
-        // Excluir item do carrossel
-        function deleteCarouselItem(id) {
+        async function deleteCarouselItem(id) {
             if (confirm('Tem certeza que deseja excluir este item do carrossel?')) {
-                carouselItems = carouselItems.filter(item => item.id !== id);
-                try {
-                    localStorage.setItem('carouselItems', JSON.stringify(carouselItems));
-                    renderCarouselItems();
-                    showAlert('Item excluído com sucesso!', 'success');
-                } catch (e) {
-                    showAlert('Erro ao salvar alterações.', 'error');
-                }
+                showAlert('Funcionalidade de exclusão será implementada em breve', 'info');
             }
         }
 
-        // Excluir produto
-        function deleteProduct(id) {
+        async function deleteProduct(id) {
             if (confirm('Tem certeza que deseja excluir este produto?')) {
-                products = products.filter(product => product.id !== id);
-                try {
-                    localStorage.setItem('products', JSON.stringify(products));
-                    renderProducts();
-                    showAlert('Produto excluído com sucesso!', 'success');
-                } catch (e) {
-                    showAlert('Erro ao salvar alterações.', 'error');
-                }
+                showAlert('Funcionalidade de exclusão será implementada em breve', 'info');
             }
         }
 
-        // Editar produto
         function editProduct(id) {
-            const product = products.find(product => product.id === id);
-            if (product) {
-                // Preencher o formulário com os dados do produto
-                document.getElementById('productTitle').value = product.title;
-                document.getElementById('productDescription').value = product.description;
-                document.getElementById('productPrice').value = product.price;
-                document.getElementById('productCategory').value = product.category;
-                document.getElementById('productStatus').value = product.status;
-                
-                // Mostrar imagem de placeholder
-                productPreview.src = 'https://via.placeholder.com/200x150?text=Imagem+do+Produto';
-                productPreview.style.display = 'block';
-                
-                // Configurar o formulário para modo de edição
-                document.getElementById('addProductForm').setAttribute('data-editing', id);
-                
-                // Alterar o texto do botão para "Atualizar"
-                const submitButton = addProductForm.querySelector('button[type="submit"]');
-                submitButton.innerHTML = '<i class="fas fa-save"></i> Atualizar Produto';
-                
-                // Rolar para o formulário
-                document.getElementById('addProductForm').scrollIntoView({ behavior: 'smooth' });
-                
-                showAlert('Preencha o formulário para editar o produto.', 'success');
-            }
+            showAlert('Funcionalidade de edição será implementada em breve', 'info');
         }
 
-        // Mostrar alertas
         function showAlert(message, type = 'success') {
-            // Remover alertas existentes
-            const existingAlerts = document.querySelectorAll('.alert');
-            existingAlerts.forEach(alert => alert.remove());
-            
-            // Criar novo alerta
             const alert = document.createElement('div');
             alert.className = `alert alert-${type}`;
             alert.innerHTML = `
@@ -359,11 +395,8 @@
                 ${message}
             `;
             
-            // Adicionar alerta ao topo do conteúdo principal
-            const mainContent = document.querySelector('.main-content');
-            mainContent.insertBefore(alert, mainContent.firstChild);
+            alertContainer.appendChild(alert);
             
-            // Remover alerta após 5 segundos
             setTimeout(() => {
                 if (alert.parentNode) {
                     alert.parentNode.removeChild(alert);
@@ -371,20 +404,7 @@
             }, 5000);
         }
 
-        // Inicializar preview de imagens
+        // Inicializar
         carouselPreview.style.display = 'none';
         productPreview.style.display = 'none';
-        
-        // Inicializar data atual
         updateCurrentDate();
-        
-        // Limpar localStorage se estiver cheio (para demo)
-        try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-        } catch (e) {
-            console.warn('LocalStorage está cheio. Limpando dados...');
-            localStorage.clear();
-            carouselItems = [];
-            products = [];
-        }

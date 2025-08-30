@@ -95,9 +95,7 @@
     <!-- barra grande com texto -->
     <div class="barra2">
         <h1 class="barraa">promoção de hoje</h1>
-    </div>
-
-    <!-- CARROSSEL DA PÁGINA INICIAL -->
+        <!-- CARROSSEL DA PÁGINA INICIAL -->
     <div class="carrossel-container" data-category="homepage">
         <button class="btn-prev" onclick="moverCarrossel(-1, 'homepage')">&#10094;</button>
         
@@ -107,16 +105,23 @@
         
         <button class="btn-next" onclick="moverCarrossel(1, 'homepage')">&#10095;</button>
     </div>
+    </div>
+
+    
 
     <script>
-        // Carregar imagens do carrossel do localStorage por categoria
-        document.addEventListener('DOMContentLoaded', function() {
-            const category = 'homepage'; // Categoria específica para a página inicial
-            const carouselItems = JSON.parse(localStorage.getItem('carouselItems')) || [];
-            const carouselElement = document.getElementById('carrossel-' + category);
-            
-            // Limpar carrossel existente
-            carouselElement.innerHTML = '';
+    // Carregar imagens do carrossel da API por categoria
+    document.addEventListener('DOMContentLoaded', async function() {
+        const category = 'homepage'; // Categoria específica para a página inicial
+        const carouselElement = document.getElementById('carrossel-' + category);
+        
+        // Limpar carrossel existente
+        carouselElement.innerHTML = '<p>Carregando promoções...</p>';
+        
+        try {
+            // Buscar itens do carrossel da API
+            const response = await fetch('http://localhost:3000/api/carousel');
+            const carouselItems = await response.json();
             
             // Filtrar itens por categoria e status
             const categoryItems = carouselItems.filter(item => 
@@ -124,12 +129,15 @@
             );
             
             if (categoryItems.length > 0) {
+                carouselElement.innerHTML = '';
+                
                 categoryItems.forEach(item => {
                     const productDiv = document.createElement('div');
                     productDiv.className = 'produto';
                     
                     productDiv.innerHTML = `
-                        <img src="${item.image}" alt="${item.title || 'Produto'}">
+                        <img src="${item.image}" alt="${item.title || 'Produto'}" 
+                             onerror="this.src='https://via.placeholder.com/200x150?text=Imagem+Não+Encontrada'">
                         ${item.title ? `<h4>${item.title}</h4>` : ''}
                         ${item.description ? `<p>${item.description}</p>` : ''}
                     `;
@@ -157,25 +165,39 @@
             // Inicializar a posição do carrossel para esta categoria
             if (!window.carouselPositions) window.carouselPositions = {};
             window.carouselPositions[category] = 0;
-        });
-
-        // Função para mover o carrossel - específica por categoria
-        function moverCarrossel(direction, category) {
-            const carousel = document.getElementById('carrossel-' + category);
-            const productWidth = document.querySelector('.produto').offsetWidth + 30; // 30px de margem
-            const visibleProducts = Math.floor(carousel.offsetWidth / productWidth);
-            const totalProducts = document.querySelectorAll('.produto').length;
             
-            // Calcular a nova posição
-            window.carouselPositions[category] += direction * visibleProducts * productWidth;
-            
-            // Limitar a posição para não ultrapassar os limites
-            const maxScroll = (totalProducts - visibleProducts) * productWidth;
-            window.carouselPositions[category] = Math.max(0, Math.min(window.carouselPositions[category], maxScroll));
-            
-            // Aplicar a transformação
-            carousel.style.transform = `translateX(-${window.carouselPositions[category]}px)`;
+        } catch (error) {
+            console.error('Erro ao carregar carrossel:', error);
+            carouselElement.innerHTML = `
+                <div class="no-products">
+                    <h2>Erro ao carregar promoções</h2>
+                    <p>Não foi possível carregar as promoções. Verifique se o servidor está rodando.</p>
+                </div>
+            `;
         }
-    </script>
+    });
+
+    // Função para mover o carrossel - específica por categoria
+    function moverCarrossel(direction, category) {
+        const carousel = document.getElementById('carrossel-' + category);
+        const produtos = carousel.querySelectorAll('.produto');
+        
+        if (produtos.length === 0) return;
+        
+        const productWidth = produtos[0].offsetWidth + 30; // 30px de margem
+        const visibleProducts = Math.floor(carousel.offsetWidth / productWidth);
+        const totalProducts = produtos.length;
+        
+        // Calcular a nova posição
+        window.carouselPositions[category] += direction * visibleProducts * productWidth;
+        
+        // Limitar a posição para não ultrapassar os limites
+        const maxScroll = (totalProducts - visibleProducts) * productWidth;
+        window.carouselPositions[category] = Math.max(0, Math.min(window.carouselPositions[category], maxScroll));
+        
+        // Aplicar a transformação
+        carousel.style.transform = `translateX(-${window.carouselPositions[category]}px)`;
+    }
+</script>
 </body>
 </html>
